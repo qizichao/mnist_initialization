@@ -44,9 +44,9 @@ def FCLayer(input_layer, weight_shape):
 	return h_fc
 
 def main():
-	if tf.gfile.Exists(FLAGS.summaries_dir):
-		tf.gfile.DeleteRecursively(FLAGS.summaries_dir)
-	tf.gfile.MakeDirs(FLAGS.summaries_dir)
+	if tf.gfile.Exists(FLAGS.logdir):
+		tf.gfile.DeleteRecursively(FLAGS.logdir)
+	tf.gfile.MakeDirs(FLAGS.logdir)
 	
 	# Download and load MNIST data.
 	mnist = input_data.read_data_sets('MNIST_data', one_hot=True);
@@ -109,14 +109,14 @@ def main():
 	#merged_summary = tf.summary.merge_all()
 	merged_summary = tf.merge_all_summaries()
 
-	train_writer = tf.train.SummaryWriter(FLAGS.summaries_dir + '/train', sess.graph)
-	test_writer = tf.train.SummaryWriter(FLAGS.summaries_dir + '/test')
+	train_writer = tf.train.SummaryWriter(FLAGS.logdir + '/train', sess.graph)
+	test_writer = tf.train.SummaryWriter(FLAGS.logdir + '/test')
 	
 	#global_variables_initializers
 	init = tf.initialize_all_variables()
 	sess.run(init)
 
-	for i in range(1000):
+	for i in range(5000):
 		if i % 50 == 0:
 			feed_dict={x: mnist.test.images, y_: mnist.test.labels, keep_prob: 1.0}
 			summary, acc = sess.run([merged_summary, accuracy], feed_dict = feed_dict)
@@ -142,7 +142,7 @@ if __name__ == '__main__':
 	
 	parser.add_argument('--dropout', type=float, default = 0.5, help = 'Dropout Ratio')
 	
-	parser.add_argument('--summaries_dir', type=str, default = './tmp', help = 'Directory to put log data')
+	parser.add_argument('--logdir', type=str, default = './tmp', help = 'Directory to put log data')
 	FLAGS, unparsed = parser.parse_known_args()
 	
 	main()
